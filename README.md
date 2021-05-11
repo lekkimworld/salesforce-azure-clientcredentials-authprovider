@@ -45,3 +45,11 @@ final String body = new Http().send(req).getBody();
 final Map<String,Object> data = (Map<String,Object>)JSON.deserializeUntyped(body);
 System.debug('Users name is: ' + data.get('displayName'));
 ```
+
+## Running Tests
+
+Once you have deployed the source to the org you can run the unit test and get the coverage using the Salesforce CLI.
+
+```
+sfdx force:apex:test:run -n Azure_ClientCredentials_AuthProviderTest -r human -v -c
+```

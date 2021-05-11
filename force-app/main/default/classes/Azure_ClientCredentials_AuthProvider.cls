@@ -1,7 +1,17 @@
 public class Azure_ClientCredentials_AuthProvider extends Auth.AuthProviderPluginClass {
-    private static final String CUSTOM_METADATA_TYPE = 'MicrosoftAzure_ClientCredentials__mdt';
-    private static final String AUTH_PROVIDER_NAME = 'Azure_ClientCredentials';
-    private static final String USERNAME = 'Azure Dummy User';
+    // constants
+    public static final String CUSTOM_METADATA_TYPE = 'MicrosoftAzure_ClientCredentials__mdt';
+    public static final String AUTH_PROVIDER_NAME = 'Azure_ClientCredentials';
+    public static final String USERNAME = 'Azure Dummy User';
+
+    // declarations
+    private IRefreshTokenGenerator generator = new DefaultRefreshTokenGenerator();
+
+    public Azure_ClientCredentials_AuthProvider() {
+    }
+    public Azure_ClientCredentials_AuthProvider(IRefreshTokenGenerator gen) {
+        this.generator = gen;
+    }
 
     public String getCustomMetadataType() {
         return CUSTOM_METADATA_TYPE;
@@ -48,7 +58,8 @@ public class Azure_ClientCredentials_AuthProvider extends Auth.AuthProviderPlugi
     public override Auth.OAuthRefreshResult refresh(Map<String, String> config, String refreshToken) {
         // generate dummy refresh token and get new access token
         final String newRefreshToken = this.generateRefreshToken();
-        return new Auth.OAuthRefreshResult(this.retrieveToken(config), newRefreshToken);
+        final String access_token = this.retrieveToken(config);
+        return new Auth.OAuthRefreshResult(access_token, newRefreshToken);
     }
 
     private String retrieveToken(Map<String, String> config) {
@@ -101,8 +112,7 @@ public class Azure_ClientCredentials_AuthProvider extends Auth.AuthProviderPlugi
     }
 
     private String generateRefreshToken() {
-        final String refreshToken = EncodingUtil.base64Encode(Crypto.generateAesKey(128));
-        return refreshToken;
+        return this.generator.generate();
     }
 
     public class Azure_ClientCredentials_Exception extends Exception {
@@ -115,6 +125,23 @@ public class Azure_ClientCredentials_AuthProvider extends Auth.AuthProviderPlugi
             this.correlationId = correlation_id;
             this.errorCode = error_code;
             return this;
+        }
+    }
+
+    /**
+     * Interface to allow us to override refresh token generation when testing.
+     */
+    public interface IRefreshTokenGenerator {
+        String generate();
+    }
+
+    /**
+     * Default implementation for runtime.
+     */
+    public class DefaultRefreshTokenGenerator implements IRefreshTokenGenerator {
+        public String generate() {
+            final String refreshToken = EncodingUtil.base64Encode(Crypto.generateAesKey(128));
+            return refreshToken;
         }
     }
 }
