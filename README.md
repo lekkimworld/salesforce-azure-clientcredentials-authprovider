@@ -21,7 +21,7 @@ This project contains the following:
 
 ## Azure setup
 
-To use the code in this project you need to create an App Registration in Azure Active Directory (AAD) and add client secrets to the application. Ensure you add the required Application Permissions to the App Registration and grant admin consent for the tenant.
+To use the code in this project you need to create an App Registration in Azure Active Directory (AAD) and add client secrets to the application. Ensure you add the required Application Permissions to the App Registration and grant admin consent for the tenant. Ensure you also add the fully qualified domain name of the Salesforce callback URL to the app registration to the section `Authentication -> Web ->Redirect URI's`.
 
 The example in this README is for using the Microsoft Graph API.
 
