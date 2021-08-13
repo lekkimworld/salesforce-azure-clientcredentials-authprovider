@@ -6,6 +6,10 @@ This project is an implementation of the Azure `client_credentials` OAuth flow f
 
 Once we have the Auth. Provider in place we can use the Salesforce Named Credentials approach where that is supported i.e. from Apex. Salesforce Named Credentials will transparently obtain and maintain a valid `access_token` when making requests from Salesforce to Azure (i.e. the Graph API) in places where Named Credentials may be used i.e. from Apex.
 
+## Video walkthru
+
+[![Youtube video walkthru](https://img.youtube.com/vi/MYOtFuPe_R4/0.jpg)](https://www.youtube.com/watch?v=MYOtFuPe_R4)
+
 ## What's in the box
 
 This project contains the following:
@@ -30,6 +34,16 @@ The example in this README is for using the Microsoft Graph API.
 1. Deploy the source i.e. using Salesforce CLI (`sfdx force:source:deploy`)
 2. Create an Auth. Provider in Setup of type `Microsoft_Azure_ClientCredentials`
 3. Create a Named Credential using the "Named Principal" Identity Type, select "OAuth 2.0" for the Authentication Protocol and select the Auth. Provider you created above. On save you should see your browser go through the OAuth flow with Azure and you should see "Authenticated as Azure Dummy User". This username is hardcoded in the `Azure_ClientCredentials_AuthProvider.cls` Apex class - feel free to change if required.
+
+## Deployment to Salesforce
+
+```
+$ sfdx force:org:create -f config/project-scratch-def.json --targetdevhubusername scratchorgdemo-devhub -a azureclientcreds
+
+$ sfdx force:source:deploy -u azureclientcreds -m ApexClass,CustomObject,RemoteSiteSetting
+
+$ sfdx force:org:open -u azureclientcreds
+```
 
 ## Use
 
